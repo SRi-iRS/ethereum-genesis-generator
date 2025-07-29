@@ -76,16 +76,16 @@ generate_genesis() {
         if [ -f /config/el/genesis-config.yaml ]; then
             envsubst < /config/el/genesis-config.yaml | yq -c > $tmp_dir/el-genesis-config.json
 
-            el_mnemonic=$(jq -r '.mnemonic // env.EL_AND_CL_MNEMONIC' $tmp_dir/el-genesis-config.json)
+            # el_mnemonic=$(jq -r '.mnemonic // env.EL_AND_CL_MNEMONIC' $tmp_dir/el-genesis-config.json)
 
-            # Process all premine wallets in one pass
-            echo "Adding premine wallets from mnemonic..."
-            jq -c '.el_premine | to_entries[]' $tmp_dir/el-genesis-config.json | while read premine; do
-                path=$(echo $premine | jq -r '.key')
-                address=$(geth-hdwallet -mnemonic "$el_mnemonic" -path "$path" | grep "public address:" | awk '{print $3}')
-                echo "  adding allocation for $address"
-                echo "$premine" | jq -c '.value |= gsub(" *ETH"; "000000000000000000") | {"'"$address"'":{"balance":.value}}' >> $tmp_dir/allocations.json
-            done
+            # # Process all premine wallets in one pass
+            # echo "Adding premine wallets from mnemonic..."
+            # jq -c '.el_premine | to_entries[]' $tmp_dir/el-genesis-config.json | while read premine; do
+            #     path=$(echo $premine | jq -r '.key')
+            #     address=$(geth-hdwallet -mnemonic "$el_mnemonic" -path "$path" | grep "public address:" | awk '{print $3}')
+            #     echo "  adding allocation for $address"
+            #     echo "$premine" | jq -c '.value |= gsub(" *ETH"; "000000000000000000") | {"'"$address"'":{"balance":.value}}' >> $tmp_dir/allocations.json
+            # done
 
             # Process static premine addresses
             echo "Adding static premine wallets..."
