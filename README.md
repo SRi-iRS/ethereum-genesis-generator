@@ -10,6 +10,12 @@ Create a new file with your custom configuration in `./config/values.env`. You c
 # Create the output directory
 mkdir output
 
+rm -rf output/*
+
+date +%s
+
+sudo docker run --rm -it -u $UID -v $PWD/output:/data -v $PWD/config/values.env:/config/values.mainnet.env optimal-genesis-generator all
+
 # Overwriting the config files and generating the EL and CL genesis
 docker run --rm -it -u $UID -v $PWD/output:/data \
   -v $PWD/config/values.env:/config/values.env \
